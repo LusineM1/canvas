@@ -16,12 +16,18 @@
     return Math.floor(Math.random()*num)+1
   };
 
+  /*const reset = function(hx, hy, bx, by){
+  		hx = gameData.hero.x;
+		hy = gameData.hero.y;
+		bx=badGuy.x;
+		by=badGuy.y; 
+  } */
   const gameData = {
    hero:{
       x: 300,
       y: 300,
-      width: 150,
-      height: 150,
+      width: 75,
+      height: 75,
       xDelta: 1,
       yDelta: 1,
       img: heroImage
@@ -30,13 +36,12 @@
     
   const hero=gameData.hero;
 
-  const badGuys=[]
+  const arr=[];
   const createPoints = function(count , canvasWidth, canvasHeight ){
-    const arr=[]
     if(count === 0){
 		return arr;
   };
-	const badGuys = {
+	const badGuy = {
 		x: rand(canvas.width),
     y: rand(canvas.height),
 		width : 100,
@@ -45,11 +50,14 @@
 		yDelta : 1,
     image: badImage
 };
+arr.push(badGuy);
 	createPoints(count-1,canvasWidth,canvasHeight);
+	return arr;
 }
-createPoints(3, canvas.width, canvas.height);
-  
+const badGuys=createPoints(3, canvas.width, canvas.height);
+    	//console.log(badGuys);
   const draw= function(){
+
     context.drawImage(backgroundImage,0,0,canvas.width, canvas.height);
     context.drawImage(heroImage,hero.x, hero.y,hero.width,hero.height);
      const forEach = function(arr, i) {
@@ -83,10 +91,13 @@ createPoints(3, canvas.width, canvas.height);
         
 badGuys[index].x += badGuys[index].xDelta;
 badGuys[index].y += badGuys[index].yDelta;
+if(hero.x < badGuys[index].x + badGuys[index].width  && hero.x + hero.width  > badGuys[index].x &&
+		hero.y < badGuys[index].y + badGuys[index].height && hero.y + hero.height > badGuys[index].y){
+	alert('Game over');	}
     
-    forEach2(arr,index+1);
+   forEach2(arr,index+1);
 }; 
-forEach2(badGuys,0);
+ forEach2(badGuys,0);
 };
 
 const loop=function(){
@@ -107,21 +118,25 @@ const downKey = 40;
     hero.x=hero.x+5;
   }
       if(hero.x>=canvas.width-hero.width){
-         hero.xDelta=-1;
+         hero.x=canvas.width-hero.width;
+         hero.x=hero.x-5;
   }
   else if(event.keyCode === leftKey){
     hero.x=hero.x-5;
   }
       if(hero.x<=0){
-         hero.x=canvas.width-hero.width;
+		hero.x=0;
   }
 
   else if(event.keyCode===downKey){
-    hero.y=canvas.height-hero.height;
+  	hero.y=hero.y+5;
+  	if(hero.y>=canvas.height-hero.height)
+    	hero.y=canvas.height-hero.height;
   }
   else if(event.keyCode === upKey){
-    if(hero.yDelta !==0){
-      hero.yDelta=3;
+  	hero.y=hero.y-5;
+    if(hero.y <=0){
+      hero.y=0;
   }
  }
 }, false);
